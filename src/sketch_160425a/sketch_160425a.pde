@@ -6,7 +6,7 @@ void setup(){
 
 PImage img;
 void draw(){
-  img = loadImage("HAL.jpg");
+  img = loadImage("../img/test.jpg");
   background(120);  
   text("HelloWorld", 15, 50);
   image(img, 100, 0);
