@@ -1,6 +1,7 @@
   import java.util.Arrays; 
   import java.util.Comparator;
-  
+  import java.util.Collections;
+    
   private static final int HAI_WIDTH = 48;
   private static final int HAI_HEIGHT = 72;
   private static final int HAI_NUM_MAX = (9+9+3+7)*4;
@@ -40,12 +41,8 @@
     for(int i = 0; i < 13; i++){
       Me.Tehai.add(shuffled.get(i));
     }
-    for(int i = 13; i < 26; i++){
-      You.Tehai.add(shuffled.get(i));
-    }
     Me.Tehai = sortTehai(Me.Tehai);
     drawTehai(Me);
-    drawTehai(You);
   }
   
   ArrayList sortTehai(ArrayList tehai){
@@ -56,18 +53,27 @@
       float min = 999;
       int min_num = 0;
       
-      for(int j = 0; j < tehai.size(); j++){
-        Hai hai = target.get(j);  
-        float temp = hai.group.x + hai.group.y * 10;
-        
-        if(temp < min){
-          min = temp;
+      for(int j = 0; j < tehai.size() - i; j++){
+        Hai hai = target.get(j);
+        int id = hai.getId();
+
+        if(id < min){
+          min = id;
           min_num = j;
+          System.out.println(id);
         }
       }
+     
+     System.out.println("---" + i + "---");
      sorted.add(target.get(min_num));
+     target.remove(min_num);
     }
-    System.out.printf("====sortTehaiFinish====\n");
+    System.out.println("====sortTehaiFinish====");
+    
+    for(Hai hai: sorted){
+      System.out.printf("%d,",hai.id);
+    }
+    
     return sorted;
   }
   
@@ -98,19 +104,18 @@
     Player(){
     }
   }
-    
   
   class Hai{
     int id;
-    PVector pos;
-    PVector group;
     PImage img;
     
     Hai(int id, int x, int y){
       this.id = id;
       this.img = imgHai.get(x * HAI_WIDTH, y * HAI_HEIGHT, HAI_WIDTH, HAI_HEIGHT);
-      group = new PVector(x, y);
-
+    }
+    
+    int getId(){
+      return id;
     }
   }
   
@@ -143,7 +148,10 @@
     this.defaultYama = createYama();
     //debagImg(this.defaultYama, 0, 0);
     
-    this.shuffled = shuffleYama(this.defaultYama);
+    shuffled = new ArrayList<Hai>(defaultYama); 
+    Collections.shuffle(shuffled);
+    //this.shuffled = shuffleYama(this.defaultYama);
+    
     //debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
   }
   
@@ -171,21 +179,22 @@
     
     return Yama;
   }
-  
+  /*
   ArrayList<Hai> shuffleYama(ArrayList<Hai> Yama){
     ArrayList<Hai> targetYama = new ArrayList(Yama);
-    ArrayList<Hai> shuffledYama = new ArrayList<Hai>();
+    Collections.shuffle(targetYama);
     
+    /*
     for(int i = HAI_NUM_MAX; i > 0; --i) {  
       int rnd = (int)random(i);
       shuffledYama.add(targetYama.get(rnd));
       targetYama.remove(rnd);
     }
+    
     System.out.printf("====shuffleYamaFinish====\n");
-    return shuffledYama;
+    return targetYama;
   }
-  
-
+  */
   
   void debagImg(ArrayList<Hai> yama, int x, int y){
     for(int i = 0; i < 12; i++){
