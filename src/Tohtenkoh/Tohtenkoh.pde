@@ -6,43 +6,60 @@
   private static final int HAI_HEIGHT = 72;
   private static final int HAI_NUM_MAX = (9+9+3+7)*4;
   
+  private PImage imgHai;
+  
+  //Layout
+  private static final int KAWA_X = 480;
+  private static final int KAWA_Y = 576;
+  private static final int TEHAI_X = 240;
+  private static final int TEHAI_Y = 862;
+  
   ArrayList<Hai> defaultYama = new ArrayList<Hai>();
   ArrayList<Hai> shuffled = new ArrayList<Hai>();
   
-  //Hai image
-  PImage imgHai;
+  //Player
+  private Player Me = new Player("Me");
+  private Player Com1 = new Player("Com1");
+  private Player Com2 = new Player("Com2");
   
-  //Layout
-  int Kawa_x = 480;
-  int Kawa_y = 576;
-  int Tehai_x = 240;
-  int Tehai_y = 862; 
-  
+  class Player{
+    ArrayList<Hai> Tehai = new ArrayList<Hai>();
+    ArrayList<Hai> Kawa = new ArrayList<Hai>();
+    ArrayList<Hai> Naki = new ArrayList<Hai>();
+    
+    int point;
+    String name;
+    String state;
+    
+    Player(String name){
+      this.name = name;
+    }
+  }
+    
   void setup(){
+    //Hai image
     imgHai = loadImage("../img/hai.png");
     
     size(1280,960);
     background(255);
-    createYama();
-    initYama();
-    /*
-    rect(Kawa_x, Kawa_y,
-        HAI_WIDTH * 6, HAI_HEIGHT * 3);
-    rect(Tehai_x, Tehai_y,
-        HAI_WIDTH * 15, HAI_HEIGHT * 1);
-    */
     game();
   }
   
   void game(){
-    Player Me = new Player();
-    Player You = new Player();
+    createYama();
+    initYama();
+    TehaiSet();
     
-    for(int i = 0; i < 13; i++){
-      Me.Tehai.add(shuffled.get(i));
-    }
     Me.Tehai = sortTehai(Me.Tehai);
     drawTehai(Me);
+  }
+  
+  void TehaiSet(){
+    for(int i = 0; i < 13; i++){
+      Me.Tehai.add(shuffled.get(i));
+      Com1.Tehai.add(shuffled.get(i+13));
+      Com2.Tehai.add(shuffled.get(i+26));
+    }
   }
   
   ArrayList sortTehai(ArrayList tehai){
@@ -80,30 +97,14 @@
   void drawTehai(Player player){
     //player = Me;
     for(int i = 0;  i < player.Tehai.size(); i++){
-      drawHai(player.Tehai.get(i), (i * HAI_WIDTH) + Tehai_x, Tehai_y);
+      //drawHai(player.TehaTEHAI_X), (i * HAI_WIDTH) + Tehai_x, Tehai_y);
+      drawHai(player.Tehai.get(i), (i * HAI_WIDTH) + TEHAI_X, TEHAI_Y);
     } 
   }
   
   void drawHai(Hai hai, float x, float y){
     image(hai.img, x, y );
   } 
-  
-  void draw(){
-    
-  }
-  
-  class Player{
-    ArrayList<Hai> Tehai = new ArrayList<Hai>();
-    ArrayList<Hai> Kawa = new ArrayList<Hai>();
-    ArrayList<Hai> Naki = new ArrayList<Hai>();
-    
-    int point;
-    String name;
-    String state;
-    
-    Player(){
-    }
-  }
   
   class Hai{
     int id;
@@ -179,22 +180,6 @@
     
     return Yama;
   }
-  /*
-  ArrayList<Hai> shuffleYama(ArrayList<Hai> Yama){
-    ArrayList<Hai> targetYama = new ArrayList(Yama);
-    Collections.shuffle(targetYama);
-    
-    /*
-    for(int i = HAI_NUM_MAX; i > 0; --i) {  
-      int rnd = (int)random(i);
-      shuffledYama.add(targetYama.get(rnd));
-      targetYama.remove(rnd);
-    }
-    
-    System.out.printf("====shuffleYamaFinish====\n");
-    return targetYama;
-  }
-  */
   
   void debagImg(ArrayList<Hai> yama, int x, int y){
     for(int i = 0; i < 12; i++){
