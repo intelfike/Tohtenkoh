@@ -9,7 +9,7 @@
   
   //TODO getter絶対書く
   void drawTsumo(Player player){
-    drawHai(player.Tehai.get(player.Tehai.size()-1), ((player.Tehai.size() + 1) * HAI_WIDTH) + TEHAI_X, TEHAI_Y);
+    drawHai(player.Tehai.get(player.Tehai.size()-1), ((player.Tehai.size()) * HAI_WIDTH) + TEHAI_X, TEHAI_Y);
   }
   
   

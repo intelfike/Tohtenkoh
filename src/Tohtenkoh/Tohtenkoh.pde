@@ -41,7 +41,7 @@
   void game(){
     shuffledYama();
     setTehai();
-    Tsumo();
+    Tsumo(Me);
   }
   
   //山を混ぜる
@@ -50,6 +50,7 @@
     Collections.shuffle(shuffled);
     nowHaiNum = 0;
     //debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
+    System.out.printf("====shuffledYamaFinish====\n");
   }
   
   //山生成
@@ -87,6 +88,7 @@
     }
     Me.Tehai = sortTehai(Me.Tehai);
     drawTehai(Me);
+    System.out.printf("====HaipaiFinish====\n");
   }
   
   //手配のソート
@@ -105,11 +107,8 @@
         if(id < min){
           min = id;
           min_num = j;
-          System.out.println(id);
         }
       }
-     
-     System.out.println("---" + i + "---");
      sorted.add(target.get(min_num));
      target.remove(min_num);
     }
@@ -118,31 +117,45 @@
     for(Hai hai: sorted){
       System.out.printf("%d,",hai.id);
     }
-    
+    System.out.println();
     return sorted;
   }
   
   //ツモして表示
-  void Tsumo(){
+  void Tsumo(Player player){
     clickHai = -1;
     
     //手牌分
     //TODO 回数
 
-    Me.Tehai.add(shuffled.get(nowHaiNum));
-    drawTsumo(Me);
+    player.Tehai.add(shuffled.get(nowHaiNum));
+    drawTsumo(player);
+    System.out.printf("====TsumoFinish====\n");
   }
   
   //クリックで牌を捨てる
-  void mouseClicked(){
+  void mousePressed(){
+    System.out.println("クリックされた");
+    Sute();
+  }
+
+  void Sute(){
     int x = mouseX;
     int y = mouseY;
-    System.out.println("クリックされた");
+    
     if(TEHAI_X <= x && x <= TEHAI_X + Me.Tehai.size() * HAI_WIDTH){
       if(TEHAI_Y <= y && y <= TEHAI_Y + HAI_HEIGHT){
         clickHai = (x - TEHAI_X) / HAI_WIDTH;
         System.out.println(clickHai);
-        Tsumo();
+        
+        //上がり処理
+        
+        
+        //捨て処理
+        //Sute(clickHai);
+        
+        //次の人
+        //Tsumo(Me);
       }
     }
   }
