@@ -1,19 +1,19 @@
   import java.util.Arrays; 
   import java.util.Comparator;
   import java.util.Collections;
-    
+
+  private PImage imgHai;
+  
+  //Layout
   private static final int HAI_WIDTH = 48;
   private static final int HAI_HEIGHT = 72;
   private static final int HAI_NUM_MAX = (9+9+3+7)*4;
   
-  private PImage imgHai;
-  
-  //Layout
   private static final int KAWA_X = 480;
   private static final int KAWA_Y = 576;
   private static final int TEHAI_X = 240;
   private static final int TEHAI_Y = 862;
-  
+    
   ArrayList<Hai> defaultYama = new ArrayList<Hai>();
   ArrayList<Hai> shuffled = new ArrayList<Hai>();
   
@@ -21,21 +21,9 @@
   private Player Me = new Player("Me");
   private Player Com1 = new Player("Com1");
   private Player Com2 = new Player("Com2");
+
+  private int clickHai = -1;
   
-  class Player{
-    ArrayList<Hai> Tehai = new ArrayList<Hai>();
-    ArrayList<Hai> Kawa = new ArrayList<Hai>();
-    ArrayList<Hai> Naki = new ArrayList<Hai>();
-    
-    int point;
-    String name;
-    String state;
-    
-    Player(String name){
-      this.name = name;
-    }
-  }
-    
   void setup(){
     //Hai image
     imgHai = loadImage("../img/hai.png");
@@ -52,6 +40,20 @@
     
     Me.Tehai = sortTehai(Me.Tehai);
     drawTehai(Me);
+    
+    Tsumo();
+  }
+  
+  void Tsumo(){
+    clickHai = -1;
+    
+    //手牌分
+    //TODO 回数
+    for(int i = 39; i < 99; i++  ){
+      Me.Tehai.add(shuffled.get(i));
+      //drawTsumo(Me);
+           
+    }
   }
   
   void TehaiSet(){
@@ -94,57 +96,6 @@
     return sorted;
   }
   
-  void drawTehai(Player player){
-    //player = Me;
-    for(int i = 0;  i < player.Tehai.size(); i++){
-      //drawHai(player.TehaTEHAI_X), (i * HAI_WIDTH) + Tehai_x, Tehai_y);
-      drawHai(player.Tehai.get(i), (i * HAI_WIDTH) + TEHAI_X, TEHAI_Y);
-    } 
-  }
-  
-  void drawHai(Hai hai, float x, float y){
-    image(hai.img, x, y );
-  } 
-  
-  class Hai{
-    int id;
-    PImage img;
-    
-    Hai(int id, int x, int y){
-      this.id = id;
-      this.img = imgHai.get(x * HAI_WIDTH, y * HAI_HEIGHT, HAI_WIDTH, HAI_HEIGHT);
-    }
-    
-    int getId(){
-      return id;
-    }
-  }
-  
-  
-  class Layout{
-    void changeShimoHai(){
-      pushMatrix();
-        translate(width/2, height/2);
-        rotate((PI / 2) * 3);
-    }
-  
-    void chageToiHai(float x, float y){
-      pushMatrix();
-        translate(width/2, height/2);
-        rotate((PI / 2) * 2);    
-    }
-  
-    void chageKamiHai(float x, float y){
-      pushMatrix();
-        translate(width/2, height/2);
-        rotate((PI / 2) * 1);
-     }
-    
-    void Reset(){
-      popMatrix();
-    }
-  }
-  
   void initYama(){
     this.defaultYama = createYama();
     //debagImg(this.defaultYama, 0, 0);
@@ -153,7 +104,7 @@
     Collections.shuffle(shuffled);
     //this.shuffled = shuffleYama(this.defaultYama);
     
-    //debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
+    debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
   }
   
   ArrayList<Hai> createYama(){
@@ -180,15 +131,3 @@
     
     return Yama;
   }
-  
-  void debagImg(ArrayList<Hai> yama, int x, int y){
-    for(int i = 0; i < 12; i++){
-      for(int j = 0; j < 10; j++){
-        if(i+j*12 >= HAI_NUM_MAX){
-          break;
-        }
-        drawHai(yama.get(i+j*12), (i * HAI_WIDTH) + x, (j * HAI_HEIGHT) + y);    
-      }
-    }
-  }
-  
