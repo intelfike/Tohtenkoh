@@ -21,9 +21,13 @@
   private Player Me = new Player("Me");
   private Player Com1 = new Player("Com1");
   private Player Com2 = new Player("Com2");
+  
+  Player Players[] = {Me, Com1, Com2};
+  private int nowPlayer = 0;
 
   private int clickHai = -1;
   private int nowHaiNum = 0;
+  
 
   //準備
   void setup(){
@@ -37,11 +41,15 @@
     game();
   }
   
+  void draw(){
+  }
+  
   //ゲームの流れ
   void game(){
+   
     shuffledYama();
     setTehai();
-    Tsumo(Me);
+    Tsumo(Players[nowPlayer % 3]);
   }
   
   //山を混ぜる
@@ -49,7 +57,10 @@
     shuffled = new ArrayList<Hai>(defaultYama); 
     Collections.shuffle(shuffled);
     nowHaiNum = 0;
-    //debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
+    
+    debagImg(this.defaultYama, 0, 0);
+    debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
+    
     System.out.printf("====shuffledYamaFinish====\n");
   }
   
@@ -86,13 +97,16 @@
       Com2.Tehai.add(shuffled.get(i+26));
       nowHaiNum += 3;
     }
-    Me.Tehai = sortTehai(Me.Tehai);
+    sortTehai(Me);
     drawTehai(Me);
     System.out.printf("====HaipaiFinish====\n");
   }
   
+  //TODO sortTehaiはPlayerの中に入れる
+  //TODO Players[nowPlayer % 3].sortTehai(); こっち採用したい
   //手配のソート
-  ArrayList sortTehai(ArrayList tehai){
+  void sortTehai(Player player){
+    ArrayList tehai = player.Tehai;
     ArrayList<Hai> target = new ArrayList<Hai>(tehai);
     ArrayList<Hai> sorted = new ArrayList<Hai>();
     
@@ -118,7 +132,7 @@
       System.out.printf("%d,",hai.id);
     }
     System.out.println();
-    return sorted;
+    player.Tehai = sorted;
   }
   
   //ツモして表示
@@ -127,10 +141,10 @@
     
     //手牌分
     //TODO 回数
-
-    player.Tehai.add(shuffled.get(nowHaiNum));
+    player.Tehai.add(shuffled.get(nowHaiNum)); //<>//
     drawTsumo(player);
-    System.out.printf("====TsumoFinish====\n");
+    System.out.printf("ツモ"+shuffled.get(nowHaiNum).id);
+    System.out.printf("\n====TsumoFinish====\n");
   }
   
   //クリックで牌を捨てる
@@ -143,19 +157,22 @@
     int x = mouseX;
     int y = mouseY;
     
-    if(TEHAI_X <= x && x <= TEHAI_X + Me.Tehai.size() * HAI_WIDTH){
+    if(TEHAI_X <= x && x <= TEHAI_X + Players[nowPlayer % 3].Tehai.size() * HAI_WIDTH){
       if(TEHAI_Y <= y && y <= TEHAI_Y + HAI_HEIGHT){
         clickHai = (x - TEHAI_X) / HAI_WIDTH;
         System.out.println(clickHai);
         
-        //上がり処理
         
         
-        //捨て処理
-        //Sute(clickHai);
+        Players[nowPlayer % 3].Tehai.remove(clickHai);
+        sortTehai(Players[nowPlayer % 3]);
+        drawTehai(Players[nowPlayer % 3]);
+        nowHaiNum += 1;
+        //TODO上がり処理
         
         //次の人
-        //Tsumo(Me);
+        //nowPlayer ++; 
+        Tsumo(Players[nowPlayer % 3]);
       }
     }
   }
