@@ -58,8 +58,8 @@
     Collections.shuffle(shuffled);
     nowHaiNum = 0;
     
-    debagImg(this.defaultYama, 0, 0);
-    debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
+    //debagImg(this.defaultYama, 0, 0);
+    //debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
     
     System.out.printf("====shuffledYamaFinish====\n");
   }
@@ -169,7 +169,9 @@
   
   void Sute(Player player, int suteHai){
     System.out.println(suteHai);
+    player.Kawa.add(player.Tehai.get(suteHai));
     player.Tehai.remove(suteHai);
+    drawKawa(player);
     
     sortTehai(player);
     drawTehai(player);
@@ -182,3 +184,5 @@
     Tsumo(players[nowPlayer % 3]);
      
   }
+  
+ 

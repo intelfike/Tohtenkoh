@@ -17,3 +17,16 @@
   void drawHai(Hai hai, float x, float y){
     image(hai.img, x, y );
   } 
+  
+  
+   void drawKawa(Player player){
+    int j = 0;
+    for(int i = 0;  i < player.Kawa.size(); i++){
+      drawHai(player.Kawa.get(i), ((i % 6) * HAI_WIDTH) + KAWA_X, KAWA_Y + HAI_HEIGHT * j);
+      
+      if((i + 1) % 6 == 0){
+        j++;
+      }
+      
+    } 
+  }

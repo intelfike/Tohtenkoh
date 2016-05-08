@@ -1,3 +1,4 @@
+
 class Hai{
     int id;
     PImage img;
