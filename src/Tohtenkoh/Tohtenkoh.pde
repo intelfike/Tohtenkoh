@@ -23,47 +23,73 @@
   private Player Com2 = new Player("Com2");
 
   private int clickHai = -1;
-  
+  private int nowHaiNum = 0;
+
+  //準備
   void setup(){
-    //Hai image
+    //画像の準備
     imgHai = loadImage("../img/hai.png");
+    //基本山作成 今後はコピーしてシャッフルして使用
+    this.defaultYama = createYama();
     
     size(1280,960);
     background(255);
     game();
   }
   
+  //ゲームの流れ
   void game(){
-    createYama();
-    initYama();
-    TehaiSet();
-    
-    Me.Tehai = sortTehai(Me.Tehai);
-    drawTehai(Me);
-    
+    shuffledYama();
+    setTehai();
     Tsumo();
   }
   
-  void Tsumo(){
-    clickHai = -1;
-    
-    //手牌分
-    //TODO 回数
-    for(int i = 39; i < 99; i++  ){
-      Me.Tehai.add(shuffled.get(i));
-      //drawTsumo(Me);
-           
-    }
+  //山を混ぜる
+   void shuffledYama(){
+    shuffled = new ArrayList<Hai>(defaultYama); 
+    Collections.shuffle(shuffled);
+    nowHaiNum = 0;
+    //debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
   }
   
-  void TehaiSet(){
+  //山生成
+  ArrayList<Hai> createYama(){
+    int id = 0;
+    ArrayList<Hai> Yama = new ArrayList<Hai>();
+    for(int y = 0; y < 4; y++){
+      for(int x = 0; x < 9; x++){
+        for(int k = 0; k < 4; k++){
+          Yama.add(new Hai(id, x, y));
+          id++;
+          System.out.printf(x+","+y+"\n" );        
+        }
+        if(y == 2){
+           x += 3;  //1m 5m 9m stepup
+        }
+        if(y == 3){
+           if(x >= 6){
+             break;
+           }
+        }
+      }
+    }
+    System.out.printf("====createYamaFinish====\n");
+    return Yama;
+  }
+  
+  //配牌
+  void setTehai(){
     for(int i = 0; i < 13; i++){
       Me.Tehai.add(shuffled.get(i));
       Com1.Tehai.add(shuffled.get(i+13));
       Com2.Tehai.add(shuffled.get(i+26));
+      nowHaiNum += 3;
     }
+    Me.Tehai = sortTehai(Me.Tehai);
+    drawTehai(Me);
   }
   
+  //手配のソート
   ArrayList sortTehai(ArrayList tehai){
     ArrayList<Hai> target = new ArrayList<Hai>(tehai);
     ArrayList<Hai> sorted = new ArrayList<Hai>();
@@ -96,38 +122,33 @@
     return sorted;
   }
   
-  void initYama(){
-    this.defaultYama = createYama();
-    //debagImg(this.defaultYama, 0, 0);
+  //ツモして表示
+  void Tsumo(){
+    clickHai = -1;
     
-    shuffled = new ArrayList<Hai>(defaultYama); 
-    Collections.shuffle(shuffled);
-    //this.shuffled = shuffleYama(this.defaultYama);
-    
-    debagImg(this.shuffled, 13 * HAI_WIDTH, 0);
+    //手牌分
+    //TODO 回数
+
+    Me.Tehai.add(shuffled.get(nowHaiNum));
+    drawTsumo(Me);
   }
   
-  ArrayList<Hai> createYama(){
-    int id = 0;
-    ArrayList<Hai> Yama = new ArrayList<Hai>();
-    for(int y = 0; y < 4; y++){
-      for(int x = 0; x < 9; x++){
-        for(int k = 0; k < 4; k++){
-          Yama.add(new Hai(id, x, y));
-          id++;
-          System.out.printf(x+","+y+"\n" );        
-        }
-        if(y == 2){
-           x += 3;  //1m 5m 9m stepup
-        }
-        if(y == 3){
-           if(x >= 6){
-             break;
-           }
-        }
+  //クリックで牌を捨てる
+  void mouseClicked(){
+    int x = mouseX;
+    int y = mouseY;
+    System.out.println("クリックされた");
+    if(TEHAI_X <= x && x <= TEHAI_X + Me.Tehai.size() * HAI_WIDTH){
+      if(TEHAI_Y <= y && y <= TEHAI_Y + HAI_HEIGHT){
+        clickHai = (x - TEHAI_X) / HAI_WIDTH;
+        System.out.println(clickHai);
+        Tsumo();
       }
     }
-    System.out.printf("====createYamaFinish====\n");
-    
-    return Yama;
   }
+
+  
+
+  
+ 
+  
