@@ -150,10 +150,11 @@
   //クリックで牌を捨てる
   void mousePressed(){
     System.out.println("クリックされた");
-    Sute(players[nowPlayer % 3]);
+    Choice();
   }
 
-  void Sute(Player player){
+  void Choice(){
+    Player player = players[nowPlayer % 3];
     int x = mouseX;
     int y = mouseY;
     
@@ -161,17 +162,23 @@
     if((TEHAI_X) <= x && (x <= TEHAI_X + player.Tehai.size() * HAI_WIDTH)){
       if(TEHAI_Y <= y && y <= TEHAI_Y + HAI_HEIGHT){
         clickHai = (x - TEHAI_X) / HAI_WIDTH;
-        System.out.println(clickHai);
-
-        player.Tehai.remove(clickHai);
-        sortTehai(player);
-        drawTehai(player);
-        nowHaiNum += 1;
-        //TODO上がり処理
-        
-        //次の人
-        //nowPlayer ++; 
-        Tsumo(players[nowPlayer % 3]);
+        Sute(player, clickHai);
       }
     }
+  }
+  
+  void Sute(Player player, int suteHai){
+    System.out.println(suteHai);
+    player.Tehai.remove(suteHai);
+    
+    sortTehai(player);
+    drawTehai(player);
+    nowHaiNum += 1;
+    
+    //TODO上がり処理
+    
+    //次の人
+    //nowPlayer ++;
+    Tsumo(players[nowPlayer % 3]);
+     
   }
