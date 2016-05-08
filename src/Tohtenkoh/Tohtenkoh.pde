@@ -18,11 +18,11 @@
   ArrayList<Hai> shuffled = new ArrayList<Hai>();
   
   //Player
-  private Player Me = new Player("Me");
-  private Player Com1 = new Player("Com1");
-  private Player Com2 = new Player("Com2");
+  private Player me = new Player("Me");
+  private Player com1 = new Player("Com1");
+  private Player com2 = new Player("Com2");
   
-  Player Players[] = {Me, Com1, Com2};
+  Player players[] = {me, com1, com2};
   private int nowPlayer = 0;
 
   private int clickHai = -1;
@@ -49,7 +49,7 @@
    
     shuffledYama();
     setTehai();
-    Tsumo(Players[nowPlayer % 3]);
+    Tsumo(players[nowPlayer % 3]);
   }
   
   //山を混ぜる
@@ -67,11 +67,11 @@
   //山生成
   ArrayList<Hai> createYama(){
     int id = 0;
-    ArrayList<Hai> Yama = new ArrayList<Hai>();
+    ArrayList<Hai> yama = new ArrayList<Hai>();
     for(int y = 0; y < 4; y++){
       for(int x = 0; x < 9; x++){
         for(int k = 0; k < 4; k++){
-          Yama.add(new Hai(id, x, y));
+          yama.add(new Hai(id, x, y));
           id++;
           System.out.printf(x+","+y+"\n" );        
         }
@@ -86,24 +86,24 @@
       }
     }
     System.out.printf("====createYamaFinish====\n");
-    return Yama;
+    return yama;
   }
   
   //配牌
   void setTehai(){
     for(int i = 0; i < 13; i++){
-      Me.Tehai.add(shuffled.get(i));
-      Com1.Tehai.add(shuffled.get(i+13));
-      Com2.Tehai.add(shuffled.get(i+26));
+      me.Tehai.add(shuffled.get(i));
+      com1.Tehai.add(shuffled.get(i+13));
+      com2.Tehai.add(shuffled.get(i+26));
       nowHaiNum += 3;
     }
-    sortTehai(Me);
-    drawTehai(Me);
+    sortTehai(me);
+    drawTehai(me);
     System.out.printf("====HaipaiFinish====\n");
   }
   
   //TODO sortTehaiはPlayerの中に入れる
-  //TODO Players[nowPlayer % 3].sortTehai(); こっち採用したい
+  //TODO players[nowPlayer % 3].sortTehai(); こっち採用したい
   //手配のソート
   void sortTehai(Player player){
     ArrayList tehai = player.Tehai;
@@ -150,35 +150,28 @@
   //クリックで牌を捨てる
   void mousePressed(){
     System.out.println("クリックされた");
-    Sute();
+    Sute(players[nowPlayer % 3]);
   }
 
-  void Sute(){
+  void Sute(Player player){
     int x = mouseX;
     int y = mouseY;
     
-    if(TEHAI_X <= x && x <= TEHAI_X + Players[nowPlayer % 3].Tehai.size() * HAI_WIDTH){
+    //TODO どうにかしたい条件式
+    if((TEHAI_X) <= x && (x <= TEHAI_X + player.Tehai.size() * HAI_WIDTH)){
       if(TEHAI_Y <= y && y <= TEHAI_Y + HAI_HEIGHT){
         clickHai = (x - TEHAI_X) / HAI_WIDTH;
         System.out.println(clickHai);
-        
-        
-        
-        Players[nowPlayer % 3].Tehai.remove(clickHai);
-        sortTehai(Players[nowPlayer % 3]);
-        drawTehai(Players[nowPlayer % 3]);
+
+        player.Tehai.remove(clickHai);
+        sortTehai(player);
+        drawTehai(player);
         nowHaiNum += 1;
         //TODO上がり処理
         
         //次の人
         //nowPlayer ++; 
-        Tsumo(Players[nowPlayer % 3]);
+        Tsumo(players[nowPlayer % 3]);
       }
     }
   }
-
-  
-
-  
- 
-  
