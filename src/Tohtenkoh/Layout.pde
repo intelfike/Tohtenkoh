@@ -1,23 +1,15 @@
 
   class Layout{
-    void changeShimoHai(){
-      pushMatrix();
-        translate(width/2, height/2);
-        rotate((PI / 2) * 3);
-    }
+    //changeHaiの引数
+    final int SHIMO = 3;
+    final int TOI = 2;
+    final int KAMI = 1;
     
-  
-    void chageToiHai(float x, float y){
+    void changeHai(int muki){
       pushMatrix();
-        translate(width/2, height/2);
-        rotate((PI / 2) * 2);    
+      translate(width/2, height/2);
+      rotate((PI / 2) * muki);
     }
-  
-    void chageKamiHai(float x, float y){
-      pushMatrix();
-        translate(width/2, height/2);
-        rotate((PI / 2) * 1);
-     }
     
     void Reset(){
       popMatrix();

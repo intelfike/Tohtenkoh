@@ -5,22 +5,25 @@
   private PImage imgHai;
   
   //Layout
+  private static final int WINDOW_WIDTH = 1280;
+  private static final int WINDOW_HEIGHT = 760;
+  
   private static final int HAI_WIDTH = 48;
   private static final int HAI_HEIGHT = 72;
   private static final int HAI_NUM_MAX = (9+9+3+7)*4;
   
-  private static final int KAWA_X = 480;
-  private static final int KAWA_Y = 576;
-  private static final int TEHAI_X = 240;
-  private static final int TEHAI_Y = 862;
+  private static final int KAWA_X = WINDOW_WIDTH / 2 - (HAI_WIDTH * 6) / 2;//480;
+  private static final int KAWA_Y = WINDOW_HEIGHT / 2 + (HAI_WIDTH * 6) / 2;//4576;
+  private static final int TEHAI_X = WINDOW_WIDTH / 2 - (HAI_WIDTH * 13) / 2;//4240;
+  private static final int TEHAI_Y = WINDOW_HEIGHT / 2 + (HAI_WIDTH * 13) / 2;//4862;
     
   ArrayList<Hai> defaultYama = new ArrayList<Hai>();
-  ArrayList<Hai> shuffled = new ArrayList<Hai>();
+  ArrayList<Hai> shuffled;//---代入しておく必要はない
   
   //Player
-  private Player me = new Player("Me");
-  private Player com1 = new Player("Com1");
-  private Player com2 = new Player("Com2");
+  private Player me = new Player("Me", false);
+  private Player com1 = new Player("Com1", true);
+  private Player com2 = new Player("Com2", true);
   
   Player players[] = {me, com1, com2};
   private int nowPlayer = 0;
@@ -35,8 +38,7 @@
     imgHai = loadImage("../img/hai.png");
     //基本山作成 今後はコピーしてシャッフルして使用
     this.defaultYama = createYama();
-    
-    size(1280,960);
+    size(1280, 760);
     background(255);
     game();
   }
@@ -49,7 +51,7 @@
    
     shuffledYama();
     setTehai();
-    Tsumo(players[nowPlayer % 3]);
+    players[nowPlayer % 3].Tsumo();
   }
   
   //山を混ぜる
@@ -97,55 +99,17 @@
       com2.Tehai.add(shuffled.get(i+26));
       nowHaiNum += 3;
     }
-    sortTehai(me);
-    drawTehai(me);
+    me.sortTehai();
+    drawTehai(me.Tehai);
     System.out.printf("====HaipaiFinish====\n");
   }
   
   //TODO sortTehaiはPlayerの中に入れる
   //TODO players[nowPlayer % 3].sortTehai(); こっち採用したい
-  //手配のソート
-  void sortTehai(Player player){
-    ArrayList tehai = player.Tehai;
-    ArrayList<Hai> target = new ArrayList<Hai>(tehai);
-    ArrayList<Hai> sorted = new ArrayList<Hai>();
-    
-    for(int i = 0; i < tehai.size(); i++){
-      float min = 999;
-      int min_num = 0;
-      
-      for(int j = 0; j < tehai.size() - i; j++){
-        Hai hai = target.get(j);
-        int id = hai.getId();
-
-        if(id < min){
-          min = id;
-          min_num = j;
-        }
-      }
-     sorted.add(target.get(min_num));
-     target.remove(min_num);
-    }
-    System.out.println("====sortTehaiFinish====");
-    
-    for(Hai hai: sorted){
-      System.out.printf("%d,",hai.id);
-    }
-    System.out.println();
-    player.Tehai = sorted;
-  }
   
-  //ツモして表示
-  void Tsumo(Player player){
-    clickHai = -1;
-    
-    //手牌分
-    //TODO 回数
-    player.Tehai.add(shuffled.get(nowHaiNum)); //<>//
-    drawTsumo(player);
-    System.out.printf("ツモ"+shuffled.get(nowHaiNum).id);
-    System.out.printf("\n====TsumoFinish====\n");
-  }
+  
+
+   //<>//
   
   //クリックで牌を捨てる
   void mousePressed(){
@@ -154,34 +118,35 @@
   }
 
   void Choice(){
-    Player player = players[nowPlayer % 3];
+    int size = players[nowPlayer % 3].Tehai.size();
     int x = mouseX;
     int y = mouseY;
     
     //TODO どうにかしたい条件式
-    if((TEHAI_X) <= x && (x <= TEHAI_X + player.Tehai.size() * HAI_WIDTH)){
+    if((TEHAI_X) <= x && (x <= TEHAI_X + size * HAI_WIDTH)){
       if(TEHAI_Y <= y && y <= TEHAI_Y + HAI_HEIGHT){
         clickHai = (x - TEHAI_X) / HAI_WIDTH;
-        Sute(player, clickHai);
+        Sute(clickHai);
       }
     }
   }
   
-  void Sute(Player player, int suteHai){
+  void Sute(int suteHai){
+    Player player = players[nowPlayer % 3];
     System.out.println(suteHai);
     player.Kawa.add(player.Tehai.get(suteHai));
     player.Tehai.remove(suteHai);
-    drawKawa(player);
+    drawKawa(player.Kawa);
     
-    sortTehai(player);
-    drawTehai(player);
+    player.sortTehai();
+    drawTehai(player.Tehai);
     nowHaiNum += 1;
     
     //TODO上がり処理
     
     //次の人
     //nowPlayer ++;
-    Tsumo(players[nowPlayer % 3]);
+    players[nowPlayer % 3].Tsumo();
      
   }
   
